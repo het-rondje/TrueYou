@@ -5,6 +5,6 @@ routes.get('/users', UserController.getAllUsers)
 routes.get('/users/:id', UserController.getUserProfile)
 routes.get('/users/:id/viewers', UserController.getViewers)
 
-routes.post('/users', UserController.addUser)
+routes.post('/users', UserController.createUser)
 
 module.exports = routes

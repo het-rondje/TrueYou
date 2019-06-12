@@ -34,27 +34,33 @@ module.exports = {
         res.send("viewers of stream: " + id + " total: " + viewerCount)
     },
 
-    addUser(req, res, next){
-        const { body } = req;
+    createUser(req, res, next){
+
+        //Generate uuid
+        //Generate keys
         
-        //todo only accesable from localhost
-        User.create(body)
-            .then(user => res.send(user))
-            .catch(next);
+        const newUser = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+        }
+
+        //Validate user
+        //Add to db
+        //Respond created user
     },
 
     getAllUsers(req, res, next){
         User.find()
-        .select('firstname lastname streamUrl messages')
-        .then(user => { res.send(user) })
-        .catch(next);
+            .select('firstname lastname streamUrl messages')
+            .then(user => { res.send(user) })
+            .catch(next);
     },
 
-    getUserProfile(req, res, next) {
+    getUser(req, res, next) {
         const {id} = req.params;
 
         User.findById(id)
-        .then(message => { res.send(message) })
-        .catch(next);
+            .then(message => { res.send(message) })
+            .catch(next);
     }
 }
