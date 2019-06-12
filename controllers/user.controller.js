@@ -1,14 +1,17 @@
-'use strict';
-
 const assert = require('assert')
 const User = require('../models/user')
 const logger = require('../config/config').logger
 const Message = require('../models//message').MessageSchema;
 const ApiError = require('../models/ApiError')
-
+var io = null;
 module.exports = {
+
+    setIo(socketInstance){
+        io = socketInstance;
+    },
+
     postMessage(message, id) {
-        User.findOne(id)
+        User.findOne({ _id: id })
             .then(user => {
                 user.messages.push(message)
 
@@ -21,6 +24,14 @@ module.exports = {
             .catch(error => {
                 console.log(error);
             })
+    },
+
+    getViewers(req, res, next){
+        const { id } = req.params;
+        var viewerCount = io.sockets.adapter.rooms[id].length
+        
+        console.log("viewers of stream: " + id + " total: " + viewerCount)
+        res.send("viewers of stream: " + id + " total: " + viewerCount)
     },
 
     addUser(req, res, next){

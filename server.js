@@ -4,6 +4,9 @@ var io = require('socket.io')(http);
 var cors = require('cors')
 app.use(cors())
 let UserController = require('./controllers/user.controller')
+
+UserController.setIo(io);
+
 const routes = require('./routes/router')
 const bodyParser = require('body-parser')
 const compression = require('compression')
@@ -17,13 +20,19 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
 
-  socket.on('message', function(msg){
+  socket.on('join', function(roomId){
+    socket.join(roomId);
 
-    console.log('message from: ' + msg.sender + " with content: " + msg.text);
-    UserController.postMessage({sender : msg.sender, text : msg.text}, msg.id);
+    console.log('user joined room: ' + roomId);
+  });
+
+  socket.on('message', function(msg){
+    console.log('message from: ' + msg.sender + " with content: " + msg.text + " to room: " + msg.roomId);
+    UserController.postMessage({sender : msg.sender, text : msg.text}, msg.roomId);
 
     //instantly pass message to everyone connected
-    io.emit('message', msg);
+    //io.emit('message', msg);
+    io.sockets.in(msg.roomId).emit('message', msg);
   });
 });
 
@@ -65,3 +74,4 @@ app.listen(3001, () => {
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
