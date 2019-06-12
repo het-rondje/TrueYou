@@ -1,9 +1,15 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Mongoose = require('mongoose');
+const Joi = require('joi');
+const Schema = Mongoose.Schema;
 const Message = require('./message').MessageSchema;
 
 const UserSchema = new Schema({
-    firstname: {
+    uuid: {
+        type: String,
+        required: true
+    },
+
+    firstName: {
         type: String,
         validate: {
             validator: (firstname) => firstname.length > 2,
@@ -11,7 +17,8 @@ const UserSchema = new Schema({
         },
         required: [true, 'firstname is required.']
     },
-    lastname: {
+
+    lastName: {
         type: String,
         validate: {
             validator: (lastname) => lastname.length > 2,
@@ -19,8 +26,13 @@ const UserSchema = new Schema({
         },
         required: [true, 'lastname is required.']
     },
-    streamUrl: { type: String 
+
+    publicKey: {
+        type: String,
+        required: true
     },
+
+    streamUrl: { type: String },
 
     messages: [Message],
     },
@@ -29,4 +41,13 @@ const UserSchema = new Schema({
         minimize: false
     });
 
-module.exports = mongoose.model('user', UserSchema);
+const user = Mongoose.model('user', UserSchema);
+
+const schema = {
+    uuid: Joi.string().guid().required(),
+    firstName: Joi.string().alphanum().min(3).max(30).required(),
+    lastName: Joi.string().alphanum().min(3).max(30).required(),
+    publicKey: Joi.string().required()
+}
+
+module.exports = user, schema;
