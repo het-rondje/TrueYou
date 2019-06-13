@@ -1,6 +1,7 @@
-const User = require('../models/user');
 const NodeRSA = require('node-rsa');
+const User = require('../models/user');
 const ApiError = require('../models/ApiError');
+
 let io = null;
 
 module.exports = {
@@ -12,26 +13,29 @@ module.exports = {
     User.findOne({
       _id: id,
     })
-        .then((user) => {
-          user.messages.push(message);
+      .then((user) => {
+        user.messages.push(message);
 
-          user.save(function(err) {
-            if (err) return console.log('error saving message: ' + err);
-            // saved!
-            console.log('succes saving message');
-          });
-        })
-        .catch((error) => {
-          console.log(error);
+        user.save((err) => {
+          if (err) {
+            return console.log(`error saving message: ${err}`);
+          }
+          // saved!
+          console.log('succes saving message');
+          return null;
         });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 
   getViewers(req, res) {
-    const {id} = req.params;
+    const { id } = req.params;
     const viewerCount = io.sockets.adapter.rooms[id].length;
 
-    console.log('viewers of stream: ' + id + ' total: ' + viewerCount);
-    res.send('viewers of stream: ' + id + ' total: ' + viewerCount);
+    console.log(`viewers of stream: ${id} total: ${viewerCount}`);
+    res.send(`viewers of stream: ${id} total: ${viewerCount}`);
   },
 
   createUser(req, res, next) {
@@ -46,7 +50,7 @@ module.exports = {
     const newUser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      publicKey: publicKey,
+      publicKey,
       notPrivateKey: privateKey,
     });
 
@@ -58,46 +62,57 @@ module.exports = {
 
     // Add to db
     newUser
-        .save()
-        .then((result) => {
+      .save()
+      .then((result) => {
         // Respond created user
-          result.notPrivateKey = undefined;
-          res.status(201).send({
-            message: 'user created',
-            user: result,
-          });
-        })
-        .catch(() => {
-          next(new ApiError('Error saving user.', 500));
+        const localResult = result;
+        localResult.notPrivateKey = undefined;
+        return res.status(201).send({
+          message: 'user created',
+          user: result,
         });
+      })
+      .catch(() => {
+        next(new ApiError('Error saving user.', 500));
+      });
+    return new ApiError('Server error', 500);
   },
 
-  async postLoginUser(req) {
-    const {id} = req.params;
-    const hashable = req.body.hashable;
-    const pubKey = req.body.pubKey;
-    const signature = req.body.signature;
-
+  async postLoginUser(req, res) {
+    const { id } = req.params;
+    const { pubKey, signature } = req.body;
     const user = await User.findById(id);
-    user.verifySignature(hashable, signature, pubKey);
+
+    if (!user) return new ApiError('No user found', 500);
+
+    if (user.verifySignature(id, signature, pubKey)) {
+      return res
+        .status(200)
+        .send({
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        });
+    }
+    return new ApiError('Incorrect Signature', 500);
   },
 
   getAllUsers(res, next) {
     User.find()
-        .select('firstname lastname streamUrl messages')
-        .then((user) => {
-          res.send(user);
-        })
-        .catch(next);
+      .select('firstname lastname streamUrl messages')
+      .then((user) => {
+        res.send(user);
+      })
+      .catch(next);
   },
 
   getUser(req, res, next) {
-    const {id} = req.params;
+    const { id } = req.params;
 
     User.findById(id)
-        .then((message) => {
-          res.send(message);
-        })
-        .catch(next);
+      .then((message) => {
+        res.send(message);
+      })
+      .catch(next);
   },
 };

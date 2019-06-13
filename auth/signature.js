@@ -1,4 +1,6 @@
 /* eslint-disable new-cap */
+const crypto = require('crypto');
+
 module.exports = {
   verifySignature(message, signature, key) {
     // Verify message
