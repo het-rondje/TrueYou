@@ -1,9 +1,11 @@
-const assert = require('assert')
-const User = require('../models/user')
-const logger = require('../config/config').logger
+const assert = require('assert');
+const User = require('../models/user');
+const NodeRSA = require('node-rsa');
+const logger = require('../config/config').logger;
 const Message = require('../models//message').MessageSchema;
 const ApiError = require('../models/ApiError')
 var io = null;
+
 module.exports = {
 
     setIo(socketInstance){
@@ -35,18 +37,35 @@ module.exports = {
     },
 
     createUser(req, res, next){
-
-        //Generate uuid
         //Generate keys
+        const key = new NodeRSA({b: 512});
+        key.generateKeyPair();
+        const publicKey = key.exportKey('pkcs8-public');
+        const privateKey = key.exportKey('pkcs8-private');
         
-        const newUser = {
+        const newUser = new User({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-        }
+            publicKey: publicKey,
+            notPrivateKey: privateKey
+        });
 
         //Validate user
-        //Add to db
-        //Respond created user
+        if(!User.validate(newUser)) {
+            console.log("error in validation");
+            return res.status(401).send("Invalid first or last name.");
+        }
+
+        //Add to db        
+        newUser.save()
+            .then((result) => {
+                //Respond created user
+                result.notPrivateKey = undefined;
+                res.status(201).send({ message: 'user created', user: result });
+            })
+            .catch((err) => {
+                next(new ApiError('Error saving user.', 500));
+            })
     },
 
     getAllUsers(req, res, next){

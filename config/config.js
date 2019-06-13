@@ -13,7 +13,7 @@ module.exports = {
     dbPort: process.env.DB_PORT || '',
     dbUser: process.env.DB_USER || 'dev',
     dbPassword: process.env.DB_PASSWORD || 'studitpassword',
-    dbDatabase: process.env.DB_DATABASE || 'studit',
+    dbDatabase: process.env.DB_DATABASE || 'rondje',
 
     logger: require('tracer')
         .console({
