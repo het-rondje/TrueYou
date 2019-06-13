@@ -4,10 +4,10 @@ const Schema = Mongoose.Schema;
 const Message = require('./message').MessageSchema;
 
 const UserSchema = new Schema({
-    uuid: {
-        type: String,
-        required: true
-    },
+    // uuid: {
+    //     type: String,
+    //     required: true
+    // },
 
     firstName: {
         type: String,
@@ -32,7 +32,12 @@ const UserSchema = new Schema({
         required: true
     },
 
-    streamUrl: { type: String },
+    streamKey: { type: String },
+
+    online: {
+        type: Boolean,
+        default: false
+    },
 
     messages: [Message],
     },
