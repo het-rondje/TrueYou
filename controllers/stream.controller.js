@@ -21,7 +21,7 @@ module.exports = {
         User.findOne({ _id: userId })
             .then((user) => {
                 user.online = true;
-                user.streamKey = streamKey;
+                user.streamKey = streamKey; //streamUrl?
                 res.status(200).send(new ApiError('OK', 200));
             })
             .catch(next);
