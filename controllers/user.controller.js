@@ -3,16 +3,22 @@ const User = require('../models/user');
 const NodeRSA = require('node-rsa');
 const logger = require('../config/config').logger;
 const Message = require('../models//message').MessageSchema;
-const ApiError = require('../models/ApiError');
+const ApiError = require('../models/ApiError')
+var io = null;
 
 module.exports = {
+
+    setIo(socketInstance){
+        io = socketInstance;
+    },
+
     postMessage(message, id) {
-        User.findOne(id)
+        User.findOne({ _id: id })
             .then(user => {
                 user.messages.push(message)
 
                 user.save(function (err) {
-                    if (err) return console.log('error saving message');
+                    if (err) return console.log('error saving message: ' + err);
                     // saved!
                     console.log('succes saving message');
                   });
@@ -20,6 +26,14 @@ module.exports = {
             .catch(error => {
                 console.log(error);
             })
+    },
+
+    getViewers(req, res, next){
+        const { id } = req.params;
+        var viewerCount = io.sockets.adapter.rooms[id].length
+        
+        console.log("viewers of stream: " + id + " total: " + viewerCount)
+        res.send("viewers of stream: " + id + " total: " + viewerCount)
     },
 
     createUser(req, res, next){
