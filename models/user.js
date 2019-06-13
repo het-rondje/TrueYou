@@ -24,12 +24,12 @@ const userSchema = new Schema({
 
     publicKey: {
         type: String,
-        required: true
+        //required: true
     },
 
     notPrivateKey: {
         type: String,
-        require: true
+        //require: true
     },
 
     streamUrl: { type: String },

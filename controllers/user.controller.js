@@ -70,7 +70,7 @@ module.exports = {
 
     getAllUsers(req, res, next){
         User.find()
-            .select('firstname lastname streamUrl messages')
+            .select('firstName lastName streamUrl messages')
             .then(user => { res.send(user) })
             .catch(next);
     },

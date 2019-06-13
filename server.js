@@ -27,8 +27,8 @@ io.on('connection', function(socket){
   });
 
   socket.on('message', function(msg){
-    console.log('message from: ' + msg.sender + " with content: " + msg.text + " to room: " + msg.roomId);
-    UserController.postMessage({sender : msg.sender, text : msg.text}, msg.roomId);
+    console.log('message from: ' + msg.user + " with content: " + msg.text + " to room: " + msg.roomId);
+    UserController.postMessage({sender : msg.user, text : msg.text}, msg.roomId);
 
     //instantly pass message to everyone connected
     //io.emit('message', msg);
