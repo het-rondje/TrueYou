@@ -3,7 +3,7 @@ const Joi = require('joi');
 const Schema = Mongoose.Schema;
 const Message = require('./message').MessageSchema;
 
-const UserSchema = new Schema({
+const userSchema = new Schema({
     firstName: {
         type: String,
         validate: {
@@ -41,7 +41,7 @@ const UserSchema = new Schema({
         minimize: false
     });
 
-const User = Mongoose.model('user', UserSchema);
+const User = Mongoose.model('User', userSchema);
 
 function validateUser(user) {
     const schema = {
@@ -53,5 +53,5 @@ function validateUser(user) {
     return Joi.validate(user, schema);    
 };
 
-module.exports.User = User;
+module.exports = User;
 module.exports.validate = validateUser;

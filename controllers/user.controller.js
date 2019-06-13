@@ -26,34 +26,32 @@ module.exports = {
         //Generate keys
         const key = new NodeRSA({b: 512});
         key.generateKeyPair();
-        const publicKey = key.exportKey('pkcs8-public').toString();
-        const privateKey = key.exportKey('pkcs8-private').toString();
+        const publicKey = key.exportKey('pkcs8-public');
+        const privateKey = key.exportKey('pkcs8-private');
         
-        console.log(req.body, publicKey, privateKey);
-        console.log('test');
         const newUser = new User({
             firstName: req.body.firstName,
-            lastName: req.body.lastName
+            lastName: req.body.lastName,
+            publicKey: publicKey,
+            notPrivateKey: privateKey
         });
-        console.log('test1');
-        
+
         //Validate user
         if(!User.validate(newUser)) {
             console.log("error in validation");
             return res.status(401).send("Invalid first or last name.");
         }
 
-        console.log(newUser);
-
-        //Add to db
+        //Add to db        
         newUser.save()
             .then((result) => {
-                console.log("Saved: \n" + result);
+                //Respond created user
+                result.notPrivateKey = undefined;
+                res.status(201).send({ message: 'user created', user: result });
             })
             .catch((err) => {
-                console.log("error");
+                next(new ApiError('Error saving user.', 500));
             })
-        //Respond created user
     },
 
     getAllUsers(req, res, next){
