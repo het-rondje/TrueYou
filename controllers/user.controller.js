@@ -16,7 +16,7 @@ module.exports = {
                 user.messages.push(message)
 
                 user.save(function (err) {
-                    if (err) return console.log('error saving message');
+                    if (err) return console.log('error saving message: ' + err);
                     // saved!
                     console.log('succes saving message');
                   });
