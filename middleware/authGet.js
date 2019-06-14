@@ -7,16 +7,16 @@
         - checkData
 */
 
-const requestCheck = require('../auth/requestCheck')
+const requestCheck = require('../auth/requestCheck');
 
 module.exports = async (req, res, next) => {
-    // Get data
-    const userId = req.headers.userId
-    const signature = req.headers.signature
-    const checkData = req.headers.checkData
-    if (!userId || !signature || !checkData) return res.status(400).send('Provide userId, signature & checkData')
-    // Verify
-    const result = requestCheck(userId, signature, checkData)
-    if (!result) return res.status(401).send('Unauthorized')
-    next()
-}
+  // Get data
+  const { userId } = req.headers;
+  const { signature } = req.headers;
+  const { checkData } = req.headers;
+  if (!userId || !signature || !checkData) return res.status(400).send('Provide userId, signature & checkData');
+  // Verify
+  const result = requestCheck(userId, signature, checkData);
+  if (!result) return res.status(401).send('Unauthorized');
+  return next();
+};

@@ -83,7 +83,7 @@ app.use('/api', routes);
 // See also http://expressjs.com/en/guide/error-handling.html
 app.use((err, req, res) => {
   res
-    .status(err.code || 404)
+    .status(err.code || 500)
     .json(err)
     .end();
 });
