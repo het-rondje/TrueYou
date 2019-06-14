@@ -7,7 +7,10 @@ const { Schema } = Mongoose;
 
 const userSchema = new Schema(
   {
-    _id: shortid.generate('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@'),
+    _id: {
+      type: String,
+      default: shortid.generate(),
+    },
     firstName: {
       type: String,
       validate: {

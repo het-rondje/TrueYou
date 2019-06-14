@@ -17,8 +17,6 @@ require('./config/mongo.db');
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  io.emit('message', 'welcome');
-
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
