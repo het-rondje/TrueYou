@@ -10,6 +10,7 @@ routes.get('/users/:id/viewers', UserController.getViewers);
 routes.post('/users/:id', UserController.postLoginUser);
 routes.post('/users', UserController.createUser);
 
-routes.post('/streams/:id/', StreamController.postStream);
+routes.post('/streams/:id/', StreamController.controlStream);
+routes.get('/streams', StreamController.getStreams);
 
 module.exports = routes;

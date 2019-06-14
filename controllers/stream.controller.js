@@ -39,7 +39,7 @@ module.exports = {
   },
 
   controlStream(req, res, next) {
-    if (req.body.online) {
+    if (req.body.online && req.params.id) {
       return deleteStream(req, res, next);
     }
     return postStream(req, res, next);
