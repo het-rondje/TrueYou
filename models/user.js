@@ -36,7 +36,14 @@ const userSchema = new Schema(
       type: String,
       // require: true
     },
-    streamUrl: { type: String },
+
+    streamKey: { type: String },
+
+    online: {
+      type: Boolean,
+      default: false,
+    },
+
     messages: [Message],
   },
   {
