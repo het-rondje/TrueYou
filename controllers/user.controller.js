@@ -1,3 +1,4 @@
+// esling no-underscore-dangle: 0
 const NodeRSA = require('node-rsa');
 const User = require('../models/user');
 const ApiError = require('../models/ApiError');
@@ -78,23 +79,21 @@ module.exports = {
     return new ApiError('Server error', 500);
   },
 
-  async postLoginUser(req, res) {
+  async loginUser(req, res) {
+    // In middleware id and signature are checked.
+
+    // Gather required data.
     const { id } = req.params;
-    const { pubKey, signature } = req.body;
-    const user = await User.findById(id);
+    const user = await User.find({ _id: id });
 
-    if (!user) return new ApiError('No user found', 500);
-
-    if (user.verifySignature(id, signature, pubKey)) {
-      return res
-        .status(200)
-        .send({
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-        });
-    }
-    return new ApiError('Incorrect Signature', 500);
+    return res.status(200).send({
+      message: 'Authorized',
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    });
   },
 
   getAllUsers(req, res, next) {
