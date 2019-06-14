@@ -3,7 +3,7 @@
     It needs:
     - Headers
         - userId
-        - signature
+        - signature (contains checkData)
         - checkData
 */
 

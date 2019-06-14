@@ -1,13 +1,23 @@
-/* {
-    sender,
-    text,
-    signature
-} */
+/* 
+    This module is used to validate authentication and integrity of socket messages
+    It needs at least the following contents in the JSON
+    {
+        sender,
+        text,
+        signature
+    }
+*/
 
 const User = require('../models/user')
-const signature = require('../auth/signature')
+const requestCheck = require('../auth/requestCheck')
 
 module.exports = (data) => {
     console.log(data);
-    const pubKey = User.findById(data.sender)
+    // Get data
+    const userId = data.sender
+    const text = data.text
+    const signature = data.signature
+    // Verify
+    const validMessage = requestCheck(userId, signature, text)
+    return validMessage
 }
