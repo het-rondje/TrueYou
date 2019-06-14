@@ -11,12 +11,25 @@ const routes = require('./routes/router');
 app.use(cors());
 
 UserController.setIo(io);
-
-
 require('./config/mongo.db');
 
+var isTokenValid = (token) => {
+	//authenticat encryption or user record in database
+	return true;
+}
+
+  // middleware to verify on Connecting and Reconnecting
+  io.use((socket, next) => {
+    let token = socket.handshake.query.token;
+    if (true || isTokenValid(token)) {
+      return next();
+    }
+    return next(new Error('authentication error'));
+  });
+
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a user connected with ip: ' + socket.handshake.address);
+  
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
