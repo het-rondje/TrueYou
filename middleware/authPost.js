@@ -12,13 +12,13 @@ const requestCheck = require('../auth/requestCheck');
 
 module.exports = async (req, res, next) => {
   // Get data
-  const { userId } = req.headers;
   const { signature } = req.headers;
+  const { userid } = req.headers;
   const { body } = req;
-  if (!userId || !signature || !body) return res.status(400).send('Provide userId, signature & body data');
+  if (!userid || !signature || !body) return res.status(400).send('Provide userId, signature & body data');
 
   // Validate
-  const result = requestCheck(userId, signature, body);
+  const result = requestCheck(userid, signature, body);
   if (!result) return res.send(401).status('Unauthorized');
   return next();
 };
