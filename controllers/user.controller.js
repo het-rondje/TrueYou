@@ -1,6 +1,7 @@
 const NodeRSA = require('node-rsa');
 const User = require('../models/user');
 const ApiError = require('../models/ApiError');
+const Logger = require('../middleware/logger');
 
 let io = null;
 
@@ -20,8 +21,9 @@ module.exports = {
           if (err) {
             return console.log(`error saving message: ${err}`);
           }
-          // saved!
-          console.log('succes saving message');
+          l
+          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message}`)
+          //console.log('succes saving message');
           return null;
         });
       })
@@ -50,7 +52,7 @@ module.exports = {
     const newUser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      publicKey,
+      publicKey: publicKey,
       notPrivateKey: privateKey,
     });
 
@@ -67,6 +69,7 @@ module.exports = {
         // Respond created user
         const localResult = result;
         localResult.notPrivateKey = undefined;
+        Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} was created.`)
         return res.status(201).send({
           message: 'user created',
           user: result,
@@ -77,7 +80,7 @@ module.exports = {
       });
     return new ApiError('Server error', 500);
   },
-
+  //add logging
   async postLoginUser(req, res) {
     const { id } = req.params;
     const { pubKey, signature } = req.body;
