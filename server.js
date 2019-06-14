@@ -28,7 +28,8 @@ var isTokenValid = (token) => {
   });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a user connected with ip: ' + socket.handshake.address);
+  
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
