@@ -64,15 +64,10 @@ module.exports = {
     // Add to db
     newUser
       .save()
-      .then((result) => {
-        // Respond created user
-        const localResult = result;
-        localResult.notPrivateKey = undefined;
-        return res.status(201).send({
-          message: 'user created',
-          user: result,
-        });
-      })
+      .then(result => res.status(201).send({
+        message: 'user created',
+        user: result,
+      }))
       .catch(() => {
         next(new ApiError('Error saving user.', 500));
       });
@@ -85,6 +80,8 @@ module.exports = {
     // Gather required data.
     const { id } = req.params;
     const user = await User.find({ _id: id });
+
+    if (user.length < 1) return res.status(500).send({ message: 'Failed' });
 
     return res.status(200).send({
       message: 'Authorized',

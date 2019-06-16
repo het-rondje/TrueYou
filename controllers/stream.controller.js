@@ -5,9 +5,10 @@ const ApiError = require('../models/ApiError');
 // Called from Android MobileClient
 function postStream(req, res, next) {
   const { id } = req.params;
-  User.findById(id)
+  User.findOneAndUpdate({ _id: id }, { online: true })
     .then((user) => {
-      user.set({ online: true });
+      console.log(user);
+
       res.status(200).send(new ApiError('OK', 200));
     })
     .catch(next);
@@ -17,9 +18,8 @@ function postStream(req, res, next) {
 // Called from Android MobileClient
 function deleteStream(req, res, next) {
   const { id } = req.params;
-  User.findById(id)
-    .then((user) => {
-      user.set({ online: false });
+  User.findOneAndUpdate({ _id: id }, { online: false })
+    .then(() => {
       res.status(200).send(new ApiError('OK', 200));
     })
     .catch(next);
@@ -40,8 +40,8 @@ module.exports = {
 
   controlStream(req, res, next) {
     if (req.body.online && req.params.id) {
-      return deleteStream(req, res, next);
+      return postStream(req, res, next);
     }
-    return postStream(req, res, next);
+    return deleteStream(req, res, next);
   },
 };
