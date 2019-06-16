@@ -99,15 +99,15 @@ app.use((req, res, next) => {
 
 app.use('/api', routes);
 
-// Catch-all error handler according to Express documentation -
-// err should always be an ApiError!
-// See also http://expressjs.com/en/guide/error-handling.html
-app.use((err, req, res) => {
-  res
-    .status(err.code || 500)
-    .json(err)
-    .end();
-});
+// // Catch-all error handler according to Express documentation -
+// // err should always be an ApiError!
+// // See also http://expressjs.com/en/guide/error-handling.html
+// app.use((err, req, res) => {
+//   res
+//     .status(err.code || 500)
+//     .json(err)
+//     .end();
+// });
 
 app.listen(3001, () => {
   console.log('api server running on port : 3001');

@@ -74,23 +74,26 @@ module.exports = {
     return new ApiError('Server error', 500);
   },
 
-  async loginUser(req, res) {
+  loginUser(req, res) {
     // In middleware id and signature are checked.
 
     // Gather required data.
     const { id } = req.params;
-    const user = await User.find({ _id: id });
+    User.findOne({ _id: id })
+      .then((user) => {
+        if (!user) {
+          return res.status(500).send({ message: 'Failed' });
+        }
 
-    if (user.length < 1) return res.status(500).send({ message: 'Failed' });
-
-    return res.status(200).send({
-      message: 'Authorized',
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      },
-    });
+        return res.status(200).send({
+          message: 'Authorized',
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          },
+        });
+      }).catch(() => res.status(500).send({ message: 'Failed' }));
   },
 
   getAllUsers(req, res, next) {

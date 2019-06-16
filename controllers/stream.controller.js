@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const ApiError = require('../models/ApiError');
+const Satoshi = require('../satoshi/satoshi');
 
+const satoshiInstance = new Satoshi();
 // Sends a post request to the server to make an user's stream appear online
 // Called from Android MobileClient
 function postStream(req, res, next) {
@@ -8,7 +10,7 @@ function postStream(req, res, next) {
   User.findOneAndUpdate({ _id: id }, { online: true })
     .then((user) => {
       console.log(user);
-
+      satoshiInstance.addToPool(id);
       res.status(200).send(new ApiError('OK', 200));
     })
     .catch(next);
@@ -20,6 +22,7 @@ function deleteStream(req, res, next) {
   const { id } = req.params;
   User.findOneAndUpdate({ _id: id }, { online: false })
     .then(() => {
+      satoshiInstance.removeFromPool(id);
       res.status(200).send(new ApiError('OK', 200));
     })
     .catch(next);
