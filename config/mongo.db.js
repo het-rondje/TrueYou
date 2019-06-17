@@ -6,6 +6,8 @@ const {
 // Gebruik es6 promises ipv mongoose mpromise
 mongoose.Promise = global.Promise;
 
+mongoose.set('useFindAndModify', false);
+
 const dbUrl = process.env.NODE_ENV === 'production'
   ? `mongodb://dbadmin:U1dI3QD34qRMXs@ds237337.mlab.com:37337/${dbDatabase}`
   : `mongodb://dbadmin:U1dI3QD34qRMXs@ds237337.mlab.com:37337/${dbDatabase}`;

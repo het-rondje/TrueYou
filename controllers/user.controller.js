@@ -1,3 +1,4 @@
+// esling no-underscore-dangle: 0
 const NodeRSA = require('node-rsa');
 const User = require('../models/user');
 const ApiError = require('../models/ApiError');
@@ -16,14 +17,11 @@ module.exports = {
     })
       .then((user) => {
         user.messages.push(message);
-
         user.save((err) => {
           if (err) {
             return console.log(`error saving message: ${err}`);
           }
-          l
           Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message}`)
-          //console.log('succes saving message');
           return null;
         });
       })
@@ -64,40 +62,41 @@ module.exports = {
 
     // Add to db
     newUser
-      .save()
-      .then((result) => {
-        // Respond created user
-        const localResult = result;
-        localResult.notPrivateKey = undefined;
-        Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} was created.`)
-        return res.status(201).send({
-          message: 'user created',
-          user: result,
-        });
+      .save((err) => {
+        if (!err) {
+          Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} was created.`)
+        }
       })
+      .then(result => res.status(201).send({
+        message: 'user created',
+        user: result,
+      }))
       .catch(() => {
         next(new ApiError('Error saving user.', 500));
       });
     return new ApiError('Server error', 500);
   },
-  //add logging
-  async postLoginUser(req, res) {
+
+  loginUser(req, res) {
+    // In middleware id and signature are checked.
+
+    // Gather required data.
     const { id } = req.params;
-    const { pubKey, signature } = req.body;
-    const user = await User.findById(id);
-
-    if (!user) return new ApiError('No user found', 500);
-
-    if (user.verifySignature(id, signature, pubKey)) {
-      return res
-        .status(200)
-        .send({
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
+    User.findOne({ _id: id })
+      .then((user) => {
+        if (!user) {
+          return res.status(500).send({ message: 'Failed' });
+        }
+        Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} logged in.`)
+        return res.status(200).send({
+          message: 'Authorized',
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          },
         });
-    }
-    return new ApiError('Incorrect Signature', 500);
+      }).catch(() => res.status(500).send({ message: 'Failed' }));
   },
 
   getAllUsers(req, res, next) {
