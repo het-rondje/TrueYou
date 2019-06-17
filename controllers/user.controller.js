@@ -21,7 +21,7 @@ module.exports = {
           if (err) {
             return console.log(`error saving message: ${err}`);
           }
-          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message}`)
+          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message}`);
           return null;
         });
       })
@@ -50,7 +50,7 @@ module.exports = {
     const newUser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      publicKey: publicKey,
+      publicKey,
       notPrivateKey: privateKey,
     });
 
@@ -64,7 +64,7 @@ module.exports = {
     newUser
       .save((err) => {
         if (!err) {
-          Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} was created.`)
+          Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} was created.`);
         }
       })
       .then(result => res.status(201).send({
@@ -87,7 +87,7 @@ module.exports = {
         if (!user) {
           return res.status(500).send({ message: 'Failed' });
         }
-        Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} logged in.`)
+        Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} logged in.`);
         return res.status(200).send({
           message: 'Authorized',
           user: {
@@ -101,7 +101,7 @@ module.exports = {
 
   getAllUsers(req, res, next) {
     User.find()
-      .select('firstName lastName streamUrl messages')
+      .select('_id firstName lastName publicKey online streamKey satoshi multiplier messages')
       .then((user) => {
         res.send(user);
       })
@@ -112,6 +112,7 @@ module.exports = {
     const { id } = req.params;
 
     User.findById(id)
+      .select('_id firstName lastName publicKey online streamKey satoshi multiplier messages')
       .then((message) => {
         res.send(message);
       })
