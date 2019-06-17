@@ -11,21 +11,21 @@ const User = require('../models/user');
 
 module.exports = async (req, res, next) => {
   // Get headers
-  const { UserId } = req.header;
-  const { Signature } = req.header;
+  const { userId } = req.header;
+  const { signature } = req.header;
 
   // Headers required
-  if (!UserId) return res.status(400).send('Provide user id');
-  if (!Signature) return res.status(400).send('Provide signature');
+  if (!userId) return res.status(400).send('Provide user id');
+  if (!signature) return res.status(400).send('Provide signature');
 
   // Check user
-  const user = await User.findById(UserId);
+  const user = await User.findById(userId);
   if (!user) res.status(401).send('Unauthorized');
 
   // Verify signature
-  const validUser = requestCheck(UserId, Signature, user.publicKey);
+  const validUser = requestCheck(userId, signature, user.publicKey);
 
   if (!validUser) res.status(401).send('Unauthorized');
-  req.userId = UserId; // User id accessible in routes
+  req.userId = userId; // User id accessible in routes
   return next();
 };
