@@ -20,11 +20,7 @@ const body = {
   randomString: 'dfc6r2vq29dtuboiadn',
 };
 
-console.log(signature.signSignature(JSON.stringify(body), pKey));
-
-
-// authenticat encryption or user record in database
-const isTokenValid = token => true;
+// console.log(signature.signSignature(JSON.stringify(body), pKey));
 
 // middleware to verify on Connecting and Reconnecting
 io.use((socket, next) => {
@@ -116,3 +112,5 @@ app.listen(3001, () => {
 http.listen(3000, () => {
   console.log('listening on *:3000');
 });
+
+module.exports = app;

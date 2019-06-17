@@ -14,6 +14,7 @@ module.exports = {
   dbUser: process.env.DB_USER || 'dev',
   dbPassword: process.env.DB_PASSWORD || 'studitpassword',
   dbDatabase: process.env.DB_DATABASE || 'rondje',
+  dbTestDatabase: process.env.DB_TESTDATABASE || 'rondje_test',
 
   logger: Logger
     .console({
