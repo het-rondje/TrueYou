@@ -23,8 +23,10 @@ module.exports = (req, res, next) => {
   const lastTimestamp = userTimestamps.get(userid);
   if (!lastTimestamp) {
     userTimestamps.set(userid, requestTimestamp);
-  } else if (requestTimestamp === +lastTimestamp) {
+  } else if (requestTimestamp <= +lastTimestamp) {
     return res.status(401).send('Unauthorized');
+  } else {
+    userTimestamps.set(userid, requestTimestamp);
   }
   // Request valid -> proceed
   return next();
