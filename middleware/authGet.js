@@ -2,21 +2,21 @@
     This module validates an incomming get requests
     It needs:
     - Headers
-        - userId
-        - signature (contains checkData)
-        - checkData
+        - UserId
+        - Signature (contains checkData)
+        - CheckData
 */
 
 const requestCheck = require('../auth/requestCheck');
 
 module.exports = async (req, res, next) => {
   // Get data
-  const { userId } = req.headers;
-  const { signature } = req.headers;
-  const { checkData } = req.headers;
-  if (!userId || !signature || !checkData) return res.status(400).send('Provide userId, signature & checkData');
+  const { UserId } = req.headers;
+  const { Signature } = req.headers;
+  const { CheckData } = req.headers;
+  if (!UserId || !Signature || !CheckData) return res.status(400).send('Provide userId, signature & checkData');
   // Verify
-  const result = requestCheck(userId, signature, checkData);
+  const result = requestCheck(UserId, Signature, CheckData);
   if (!result) return res.status(401).send('Unauthorized');
   return next();
 };

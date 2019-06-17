@@ -1,30 +1,31 @@
-/*
-  This module is used as a middleware function in express routes, it validates the users authenticity
-  Requests need to have:
-  - Headers
-    - userId
-    - signature (contains userId)
+/* This module is used as a middleware function in express routes,
+    it validates the users authenticity
+    Requests need to have:
+    - Headers
+      - UserId
+      - Signature (contains UserId)
 */
 
-const requestCheck = require('../auth/requestCheck')
+const requestCheck = require('../auth/requestCheck');
+const User = require('../models/user');
 
 module.exports = async (req, res, next) => {
   // Get headers
-  const { userId } = req.header;
-  const { signature } = req.header;
+  const { UserId } = req.header;
+  const { Signature } = req.header;
 
   // Headers required
-  if (!userId) return res.status(400).send('Provide user id');
-  if (!signature) return res.status(400).send('Provide signature');
+  if (!UserId) return res.status(400).send('Provide user id');
+  if (!Signature) return res.status(400).send('Provide signature');
 
   // Check user
-  const user = await User.findById(userId);
+  const user = await User.findById(UserId);
   if (!user) res.status(401).send('Unauthorized');
 
   // Verify signature
-  const validUser = requestCheck(userId, signature, user.publicKey);
+  const validUser = requestCheck(UserId, Signature, user.publicKey);
 
   if (!validUser) res.status(401).send('Unauthorized');
-  req.userId = userId; // User id accessible in routes
+  req.userId = UserId; // User id accessible in routes
   return next();
 };
