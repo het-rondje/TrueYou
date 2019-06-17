@@ -108,6 +108,15 @@ module.exports = {
       .catch(next);
   },
 
+  getPublicKeys(req, res, next) {
+    User.find()
+      .select('_id  publicKey')
+      .then((user) => {
+        res.send(user);
+      })
+      .catch(next);
+  },
+
   getUser(req, res, next) {
     const { id } = req.params;
 

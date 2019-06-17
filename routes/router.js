@@ -5,6 +5,9 @@ const StreamController = require('../controllers/stream.controller');
 const authPost = require('../middleware/authPost');
 
 routes.get('/users', UserController.getAllUsers);
+//this endpoint should always be public
+routes.get('/publickeys', UserController.getPublicKeys);
+
 routes.get('/users/:id', UserController.getUser);
 routes.get('/users/:id/viewers', UserController.getViewers);
 
