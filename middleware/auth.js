@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
   if (!user) res.status(401).send('Unauthorized');
 
   // Verify signature
-  const validUser = requestCheck(userid, signature, user.publicKey);
+  const validUser = await requestCheck(userid, signature, user.publicKey);
 
   if (!validUser) res.status(401).send('Unauthorized');
   req.userId = userid; // User id accessible in routes

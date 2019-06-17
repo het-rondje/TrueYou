@@ -9,6 +9,7 @@ module.exports = async (userId, sig, data) => {
   const user = await User.findById(userId);
   if (!user) return false;
   // Validate signature
-  const result = await signature.verifySignature(JSON.stringify(data), sig, user.publicKey);
+  let result = false;
+  result = await signature.verifySignature(JSON.stringify(data), sig, user.publicKey);
   return result;
 };

@@ -10,13 +10,13 @@
 
 const requestCheck = require('../auth/requestCheck');
 
-module.exports = (data) => {
+module.exports = async (data) => {
   console.log(data);
   // Get data
   const userId = data.sender;
   const { text } = data;
   const { signature } = data.signature;
   // Verify
-  const validMessage = requestCheck(userId, signature, text);
+  const validMessage = await requestCheck(userId, signature, text);
   return validMessage;
 };

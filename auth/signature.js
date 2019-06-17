@@ -9,7 +9,7 @@ module.exports = {
     const publicKeyBuf = new Buffer.from(key, 'ascii');
     const signatureBuf = new Buffer.from(signature, 'hex');
     const result = verifier.verify(publicKeyBuf, signatureBuf);
-    // console.log('Signature correct: ' + result)
+    console.log(`Signature correct: ${result}`);
     return result;
   },
 
