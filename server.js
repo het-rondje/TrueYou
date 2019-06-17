@@ -8,6 +8,7 @@ const compression = require('compression');
 const UserController = require('./controllers/user.controller');
 const routes = require('./routes/router');
 const signature = require('./auth/signature');
+const authSocket = require('./middleware/authSocket');
 
 app.use(cors());
 
@@ -49,6 +50,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (msg) => {
+    const validSignature = authSocket(msg);
+    if (!validSignature) {
+      console.log('chat message signature invalid');
+      return;
+    }
     console.log(
       `message from: ${msg.sender} with content: ${msg.text
       } to room: ${msg.roomId}`,
