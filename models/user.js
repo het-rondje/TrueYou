@@ -19,7 +19,6 @@ const userSchema = new Schema(
       },
       required: [true, 'firstname is required.'],
     },
-
     lastName: {
       type: String,
       validate: {
@@ -36,14 +35,17 @@ const userSchema = new Schema(
       type: String,
       // require: true
     },
-
     streamKey: { type: String },
-
     online: {
       type: Boolean,
       default: false,
     },
-
+    satoshi: {
+      type: Number,
+    },
+    multiplier: {
+      type: Number,
+    },
     messages: [Message],
   },
   {

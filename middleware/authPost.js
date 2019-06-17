@@ -8,16 +8,21 @@
         - Can be anything
 */
 
-const requestCheck = require('../auth/requestCheck')
+const requestCheck = require('../auth/requestCheck');
 
-module.exports = async (req, res, next) => {
-    // Get data
-    const userId = req.headers.userId
-    const signature = req.headers.signature
-    const body = req.body
-    if (!userId || !signature || !body) return res.status(400).send('Provide userId, signature & body data')
-    // Validate
-    const result = requestCheck(userId, signature, body)
-    if (!result) return res.send(401).status('Unauthorized')
-    next()
-}
+module.exports = (req, res, next) => {
+  // Get data
+  const { signature, userid } = req.headers;
+  const { body } = req;
+
+  if (!userid || !signature || !body) return res.status(400).send('Provide userId, signature & body data');
+
+  // Validate
+  requestCheck(userid, signature, body)
+    .then((result) => {
+      if (!result) return res.send(401).status('Unauthorized');
+      return next();
+    })
+    .catch(() => res.send(500).status('Error'));
+  return next();
+};
