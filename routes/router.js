@@ -3,10 +3,11 @@ const routes = require('express').Router();
 const UserController = require('../controllers/user.controller');
 const StreamController = require('../controllers/stream.controller');
 const authPost = require('../middleware/authPost');
+const authGet = require('../middleware/authGet');
 
-routes.get('/users', UserController.getAllUsers);
-routes.get('/users/:id', UserController.getUser);
-routes.get('/users/:id/viewers', UserController.getViewers);
+routes.get('/users', authGet, UserController.getAllUsers);
+routes.get('/users/:id', authGet, UserController.getUser);
+routes.get('/users/:id/viewers', authGet, UserController.getViewers);
 
 routes.post('/users/:id', authPost, UserController.loginUser);
 routes.post('/users', UserController.createUser);

@@ -40,9 +40,7 @@ module.exports = {
 
   createUser(req, res, next) {
     // Generate keys
-    const key = new NodeRSA({
-      b: 512,
-    });
+    const key = new NodeRSA({ b: 512 });
     key.generateKeyPair();
     const publicKey = key.exportKey('pkcs8-public');
     const privateKey = key.exportKey('pkcs8-private');
@@ -103,6 +101,7 @@ module.exports = {
     User.find()
       .select('_id firstName lastName publicKey online streamKey satoshi multiplier messages')
       .then((user) => {
+        console.log(user);
         res.send(user);
       })
       .catch(next);
