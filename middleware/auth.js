@@ -20,9 +20,12 @@ module.exports = async (req, res, next) => {
 
   // Check user
   const user = await User.findById(userid);
-  if (!user) res.status(401).send('Unauthorized');
-
+  if (!user) {
+    res.status(401).send('User not found');
+    console.log('user not found')
+  }
   // Verify signature
+  console.log('trying to validate user: ' + userid + " with signature: " + signature + " with public key: " + user.publicKey)
   const validUser = await requestCheck(userid, signature, user.publicKey);
 
   if (!validUser) res.status(401).send('Unauthorized');
