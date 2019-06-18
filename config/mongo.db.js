@@ -5,18 +5,13 @@ const { logger, dbDatabase, dbTestDatabase } = require('./config');
 mongoose.Promise = global.Promise;
 
 mongoose.set('useFindAndModify', false);
-
-// const dbUrl = process.env.NODE_ENV === 'production'
-//   ? `mongodb://dbadmin:U1dI3QD34qRMXs@ds237337.mlab.com:37337/${dbDatabase}`
-//   : `mongodb://dbadmin:Yh6hXYRjqE8XU6@ds139167.mlab.com:39167/${dbDatabase}`;
-
 let dbUrl;
 
+// Check environment to choose a database
 if (process.env.NODE_ENV === 'production') {
   dbUrl = `mongodb://dbadmin:U1dI3QD34qRMXs@ds237337.mlab.com:37337/${dbDatabase}`;
-}
-
-if (process.env.NODE_ENV === 'test') {
+} else {
+  // For all other cases use test database
   dbUrl = `mongodb://dbadmin:Yh6hXYRjqE8XU6@ds139167.mlab.com:39167/${dbTestDatabase}`;
 }
 
