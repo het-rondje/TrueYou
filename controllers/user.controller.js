@@ -21,7 +21,7 @@ module.exports = {
           if (err) {
             return console.log(`error saving message: ${err}`);
           }
-          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message}`);
+          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message.text}`);
           return null;
         });
       })
