@@ -7,10 +7,10 @@ const { Schema } = Mongoose;
 
 const userSchema = new Schema(
   {
-    _id: {
-      type: String,
-      default: shortid.generate(),
-    },
+    // _id: {
+    //   type: String,
+    //   default: shortid.generate(),
+    // },
     firstName: {
       type: String,
       validate: {
@@ -42,6 +42,7 @@ const userSchema = new Schema(
     },
     satoshi: {
       type: Number,
+      default: 0,
     },
     multiplier: {
       type: Number,
@@ -54,7 +55,7 @@ const userSchema = new Schema(
   },
 );
 
-const User = Mongoose.model('User', userSchema);
+const User = Mongoose.model('user', userSchema);
 
 function validateUser(user) {
   const schema = {
