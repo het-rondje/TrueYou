@@ -59,16 +59,14 @@ module.exports = {
     }
 
     // Add to db
-    newUser
-      .save((err) => {
-        if (!err) {
-          Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} was created.`);
-        }
+    newUser.save()
+      .then((result) => {
+        res.status(201).send({
+          message: 'user created',
+          user: result,
+        });
+        Logger.info(`User_id: ${result._id} with name: ${result.firstName} ${result.lastName} was created.`);
       })
-      .then(result => res.status(201).send({
-        message: 'user created',
-        user: result,
-      }))
       .catch(() => {
         next(new ApiError('Error saving user.', 500));
       });
