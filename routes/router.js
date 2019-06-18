@@ -6,6 +6,8 @@ const authPost = require('../middleware/authPost');
 const authGet = require('../middleware/authGet');
 
 routes.get('/users', authGet, UserController.getAllUsers);
+routes.get('/publickeys', authGet, UserController.getPublicKeys);
+
 routes.get('/users/:id', authGet, UserController.getUser);
 routes.get('/users/:id/viewers', authGet, UserController.getViewers);
 

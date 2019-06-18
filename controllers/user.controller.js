@@ -21,7 +21,7 @@ module.exports = {
           if (err) {
             return console.log(`error saving message: ${err}`);
           }
-          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message}`);
+          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message.text}`);
           return null;
         });
       })
@@ -100,6 +100,15 @@ module.exports = {
       .select('_id firstName lastName publicKey online streamKey satoshi multiplier messages')
       .then((user) => {
         console.log(user);
+        res.send(user);
+      })
+      .catch(next);
+  },
+
+  getPublicKeys(req, res, next) {
+    User.find()
+      .select('_id  publicKey')
+      .then((user) => {
         res.send(user);
       })
       .catch(next);
