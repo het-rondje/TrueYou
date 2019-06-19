@@ -21,7 +21,7 @@ module.exports = {
           if (err) {
             return console.log(`error saving message: ${err}`);
           }
-          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message}`);
+          Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} posted a message: ${message.text}`);
           return null;
         });
       })
@@ -40,9 +40,7 @@ module.exports = {
 
   createUser(req, res, next) {
     // Generate keys
-    const key = new NodeRSA({
-      b: 512,
-    });
+    const key = new NodeRSA({ b: 512 });
     key.generateKeyPair();
     const publicKey = key.exportKey('pkcs8-public');
     const privateKey = key.exportKey('pkcs8-private');
@@ -61,16 +59,14 @@ module.exports = {
     }
 
     // Add to db
-    newUser
-      .save((err) => {
-        if (!err) {
-          Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} was created.`);
-        }
+    newUser.save()
+      .then((result) => {
+        res.status(201).send({
+          message: 'user created',
+          user: result,
+        });
+        Logger.info(`User_id: ${result._id} with name: ${result.firstName} ${result.lastName} was created.`);
       })
-      .then(result => res.status(201).send({
-        message: 'user created',
-        user: result,
-      }))
       .catch(() => {
         next(new ApiError('Error saving user.', 500));
       });
@@ -103,6 +99,7 @@ module.exports = {
     User.find()
       .select('_id firstName lastName publicKey online streamKey satoshi multiplier messages')
       .then((user) => {
+        console.log(user);
         res.send(user);
       })
       .catch(next);

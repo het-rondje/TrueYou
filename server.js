@@ -12,7 +12,9 @@ const signature = require('./auth/signature');
 app.use(cors());
 
 UserController.setIo(io);
-require('./config/mongo.db');
+if (process.env.NODE_ENV !== 'test') {
+  require('./config/mongo.db');
+}
 
 const pKey = '-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC7V3z0grFmmkwt\nR2PmstixPgwSh6gEd6BIV9An1alqkebiKAS7lG1qQN077AJMK5mynK76L8GSPQGE\nwVrCCi53vL/gX0luI0CekzTzAfUDrDozQQ9Kn+HeeSLj34AwtARBWqcSNGEaCS7E\nVjkts0EnjVyf8piUTBLwi5ctuMzPjw12A+YRToiQkFs8emtlMKkKvfEU9EkY5A4I\nPncICRJSmEmC2XTsMDxhzQclaHDAh7e9WeDy7k6uTnyJXxJHcGh9KoMi/SF5oUAF\nfw0pVNcuzqkn67x49Xn5ofvdFxRihtJKh0XY8e70fvNReXNPhgZqvWN84Hz2calW\nNKL9dCy9AgMBAAECggEAQF88gWvS9zV3jWtlaWT0zlpKnaddVUOhoJoD3VwuXX8K\nvZUQoz/KJONq4WckFvY4VsY93ZvBQLWTqwEhZWFIPD5wE/HJ8n1Me/CLFiELBpsM\nWIY3ceXkH6SyF2i5zIJen/I9TCURZHfZSP9zoD9i2Ota817RjMtjCqJ8bOp9/adM\nRZk20okFw8AgEHYbGYTFutmHkgGh9CHEzBUFu53ewrFtzJin3NhC9NA90tXO4jXh\n7KGJoCLLH7D8TLsj747glFmw+W4VclhOF9Xf6yRtvjVBe/0j5cKhpqX67B9M/5C9\nPR1iD+PDMUtLjryH6DQo3TzahhruqgTNLt1YxA+5wQKBgQDlvcMJDxqA0wPdd6yz\n4o+/KMk8tVA0q9bckHPLqaaaGhT3Oi9IXv48Hh8hV3zODHSD1X1h8ksbNJ4eRB+i\nIq/PuVh2IeG+IDC0mf7U3cCbN4Aq+t7cc/X3A39YtcWGrVorYpvnFunFx64w+3iH\nRLcs26YUgZQUhS3C0kPiVzm+sQKBgQDQwR1yWAX8Vzmejy2OOa4wVeWgJ6Z9hB7n\n2Wxzub5sKgFJXvPberh6O5JPrOOCsL8t1Eqa+M+6LshjqYhqB+nT2qf2TPpAUbNi\nb6C8Vh/wZ+iO09weRdYO+uoEbg9pgGgE0fLzYeSoNrv9u/yModJ20mHrq3F1oU1G\n4yGsi7ZJzQKBgQDDuUPkftqMb7l2PxOB+P2P1NaEgs9+3/rf06zjEHhgBuJfsVFA\n7bTYUK0iwZ8RB6ln+0SjYkE8PzqJ/G2ausRfSr8jfUANsuzrn9prTTReyAzIEQw2\nchBVTcR7Nfi/AQa1uX+qg2nL1o7/Ke4IB7GqZMJ769zVEpTmyi2NMdR/MQKBgDs7\nAALojNI7YYLmtxNKtGzMgnm9plSovygjncz8H9aK2JCb228j0+ICsxHeSTNUuPnk\n6UItZKs8COmWObl0A1l0CgItdzf2toIwkBfADBHnOaoE3MjOId1gPjQBkmfp4hm0\nBE4gMYO0/AQTaaXxaEkEinoWy/uHR+jcGzrc7VzlAoGBAI3UuJlJ3FtZax1DdgXJ\n38V3N1ECOU1EuoK1NvOAnvvJABFRpHhv0+4TAYMiBMK0sCCvVPukmQcIvXkKqOdx\n3vuXNbFKNBifUuQACdm+HDsk6CivkxCVMXfZVWPjfhwAf4J1Bb3OrgNegDXzP5n3\ngIr9y7nnnCntOjUppTtgf46U\n-----END PRIVATE KEY-----';
 
@@ -20,11 +22,7 @@ const body = {
   randomString: 'dfc6r2vq29dtuboiadn',
 };
 
-console.log(signature.signSignature(JSON.stringify(body), pKey));
-
-
-// authenticat encryption or user record in database
-const isTokenValid = token => true;
+// console.log(signature.signSignature(JSON.stringify(body), pKey));
 
 // middleware to verify on Connecting and Reconnecting
 io.use((socket, next) => {
@@ -116,3 +114,5 @@ app.listen(3001, () => {
 http.listen(3000, () => {
   console.log('listening on *:3000');
 });
+
+module.exports = app;
