@@ -21,7 +21,7 @@ const body = {
   randomString: 'dfc6r2vq29dtuboiadn',
 };
 
-console.log(signature.signSignature(JSON.stringify(body), pKey));
+// console.log(signature.signSignature(JSON.stringify(body), pKey));
 
 
 // authenticat encryption or user record in database

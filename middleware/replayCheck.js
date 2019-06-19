@@ -11,7 +11,6 @@ const verifySignature = require('../auth/requestCheck');
 const userTimestamps = new Map();
 
 module.exports = async (req, res, next) => {
-  console.log('Start');
   // Get data
   const { userid, timestamp, timesignature } = req.headers;
   if (!userid || !timesignature || !timestamp) return res.status(400).send('Provide headers: userid, timesignature, timestamp');
