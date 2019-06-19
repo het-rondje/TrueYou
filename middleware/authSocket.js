@@ -4,10 +4,11 @@
     signature
 } */
 
-const User = require('../models/user')
-const signature = require('../auth/signature')
+const User = require('../models/user');
+const signature = require('../auth/signature');
 
 module.exports = (data) => {
-    console.log(data);
-    const pubKey = User.findById(data.sender)
+  console.log(data);
+  const pubKey = User.findById(data.sender);
 }
+;

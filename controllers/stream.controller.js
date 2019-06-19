@@ -10,7 +10,7 @@ function postStream(req, res, next) {
   User.findOneAndUpdate({ _id: id }, { online: true })
     .then((user) => {
       console.log(user);
-      Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} started streaming.`)
+      Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} started streaming.`);
       satoshiInstance.addToPool(id);
       res.status(200).send(new ApiError('OK', 200));
     })
@@ -23,7 +23,7 @@ function deleteStream(req, res, next) {
   const { id } = req.params;
   User.findOneAndUpdate({ _id: id }, { online: false })
     .then(() => {
-      Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} stopped streaming.`)
+      Logger.info(`User_id: ${newUser._id} with name: ${newUser.firstName} ${newUser.lastName} stopped streaming.`);
       satoshiInstance.removeFromPool(id);
       res.status(200).send(new ApiError('OK', 200));
     })
@@ -50,5 +50,6 @@ module.exports = {
       }
       return deleteStream(req, res, next);
     }
+    return new ApiError('OK', 200);
   },
 };
