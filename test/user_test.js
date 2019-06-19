@@ -36,6 +36,7 @@ describe('/api/users', () => {
             .end((err, res) => {
               console.log(err);
               if (err) throw err;
+              console.log(res.body);
 
               assert(res.body.size > 0);
               assert.equal(res.status, 200);
