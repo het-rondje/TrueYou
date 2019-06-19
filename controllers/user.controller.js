@@ -36,9 +36,7 @@ module.exports = {
     if (io.sockets.adapter.rooms[id]) {
       viewerCount = io.sockets.adapter.rooms[id].length;
     }
-
-    console.log(`viewers of stream: ${id} total: ${viewerCount}`);
-    res.send({count: viewerCount});
+    res.send({ count: viewerCount });
   },
 
   createUser(req, res, next) {
@@ -95,7 +93,11 @@ module.exports = {
             lastName: user.lastName,
           },
         });
-      }).catch(() => res.status(500).send({ message: 'Failed' }));
+      }).catch((e) => {
+        console.log(e);
+
+        res.status(500).send({ message: 'Failed' });
+      });
   },
 
   getAllUsers(req, res, next) {
