@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "a chat server based on sochet.io",
   "scripts": {
-    "start": "node server.js",
+    "start": "SET NODE_ENV=production&&node server.js",
     "test": "SET NODE_ENV=test&& nodemon --exec mocha --timeout 9999 --recursive -R min",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
 
     socket.join(msg.roomId);
 
-    UserController.postMessage({ sender: msg.sender, text: msg.text },
+    UserController.postMessage({ sender: msg.sender, text: msg.text, firstName: msg.firstName, lastName: msg.lastName },
       msg.roomId);
 
     // instantly pass message to everyone connected

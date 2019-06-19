@@ -38,7 +38,7 @@ module.exports = {
     }
 
     console.log(`viewers of stream: ${id} total: ${viewerCount}`);
-    res.send(`viewers of stream: ${id} total: ${viewerCount}`);
+    res.send({count: viewerCount});
   },
 
   createUser(req, res, next) {
