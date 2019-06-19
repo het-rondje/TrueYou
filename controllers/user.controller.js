@@ -32,11 +32,11 @@ module.exports = {
 
   getViewers(req, res) {
     const { id } = req.params;
-    var viewerCount = 0;
-    if(io.sockets.adapter.rooms[id]){
+    let viewerCount = 0;
+    if (io.sockets.adapter.rooms[id]) {
       viewerCount = io.sockets.adapter.rooms[id].length;
     }
-    
+
     console.log(`viewers of stream: ${id} total: ${viewerCount}`);
     res.send(`viewers of stream: ${id} total: ${viewerCount}`);
   },
@@ -84,7 +84,7 @@ module.exports = {
     User.findOne({ _id: id })
       .then((user) => {
         if (!user) {
-          return res.status(500).send({ message: 'Failed' });
+          return res.status(500).send({ message: 'user not found' });
         }
         Logger.info(`User_id: ${user._id} with name: ${user.firstName} ${user.lastName} logged in.`);
         return res.status(200).send({

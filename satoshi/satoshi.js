@@ -23,15 +23,22 @@ module.exports = class Satoshi {
       this.users.forEach((e) => {
         e.elapsed += 1;
         if (e.elapsed % 60 === 0) {
-          const multiplier = Math.round(e.elapsed / 60);
-          let amount = 1;
+          let multiplier;
+          User.findOne({ _id: id })
+            .then((user) => {
+              // eslint-disable-next-line prefer-destructuring
+              multiplier = user.multiplier;
 
-          if (multiplier !== 1) {
-            amount = 2 ** multiplier;
-          }
-          User.findOneAndUpdate({ _id: e.userid }, { satoshi: amount, multiplier })
-            .then(() => {
-              // TODO implement logging
+              multiplier += Math.round(e.elapsed / 60);
+              let amount = 1;
+
+              if (multiplier !== 1) {
+                amount = 2 ** multiplier;
+              }
+              User.findOneAndUpdate({ _id: e.userid }, { satoshi: amount, multiplier })
+                .then(() => {
+                  // TODO implement logging
+                });
             });
         }
       });
