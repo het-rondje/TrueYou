@@ -21,7 +21,7 @@ module.exports = class Satoshi {
   init() {
     setInterval(() => {
       this.users.forEach((e) => {
-        e.elapsed += 5;
+        e.elapsed += 1;
         if (e.elapsed % 60 === 0) {
           const multiplier = Math.round(e.elapsed / 60);
           let amount = 1;
