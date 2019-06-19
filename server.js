@@ -36,6 +36,8 @@ io.on('connection', (socket) => {
       } to room: ${msg.roomId}`,
     );
 
+    socket.join(msg.roomId);
+
     UserController.postMessage({ sender: msg.sender, text: msg.text },
       msg.roomId);
 
