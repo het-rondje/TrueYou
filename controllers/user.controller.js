@@ -32,8 +32,11 @@ module.exports = {
 
   getViewers(req, res) {
     const { id } = req.params;
-    const viewerCount = io.sockets.adapter.rooms[id].length;
-
+    var viewerCount = 0;
+    if(io.sockets.adapter.rooms[id]){
+      viewerCount = io.sockets.adapter.rooms[id].length;
+    }
+    
     console.log(`viewers of stream: ${id} total: ${viewerCount}`);
     res.send(`viewers of stream: ${id} total: ${viewerCount}`);
   },
