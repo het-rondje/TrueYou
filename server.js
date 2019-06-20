@@ -38,7 +38,9 @@ io.on('connection', (socket) => {
 
     socket.join(msg.roomId);
 
-    UserController.postMessage({ sender: msg.sender, text: msg.text, firstName: msg.firstName, lastName: msg.lastName },
+    UserController.postMessage({
+ sender: msg.sender, text: msg.text, firstName: msg.firstName, lastName: msg.lastName 
+},
       msg.roomId);
 
     // instantly pass message to everyone connected
@@ -81,7 +83,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api', routes);
+app.use(routes);
 
 app.listen(3001, () => {
   console.log('api server running on port : 3001');
