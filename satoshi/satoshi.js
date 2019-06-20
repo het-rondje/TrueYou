@@ -23,6 +23,7 @@ module.exports = class Satoshi {
       this.users.forEach((e) => {
         e.elapsed += 1;
         if (e.elapsed % 2 === 0) {
+          log(`user ${e.userid} has been streaming for ${e.elapsed}`);
           let multiplier;
           User.findOne({ _id: id })
             .then((user) => {
