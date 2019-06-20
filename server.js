@@ -5,7 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const express = require('express');
-let path = require('path');
+const path = require('path');
 
 const UserController = require('./controllers/user.controller');
 const routes = require('./routes/router');
@@ -90,7 +90,7 @@ app.use((req, res, next) => {
 // client
 app.use(express.static(path.join(__dirname, 'client')));
 
-app.use(routes);
+app.use('/api', routes);
 
 app.listen(3001, () => {
   console.log('api server running on port : 3001');
@@ -102,9 +102,8 @@ http.listen(3000, () => {
 
 // Postprocessing; catch all non-existing endpoint requests
 app.use('*', (req, res, next) => {
-	// logger.error('Non-existing endpoint')
-	res.sendFile('index.html', { root: path.join(__dirname, 'client') });
-
+  // logger.error('Non-existing endpoint')
+  res.sendFile('index.html', { root: path.join(__dirname, 'client') });
 });
 
 module.exports = app;
