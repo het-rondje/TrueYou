@@ -104,7 +104,6 @@ module.exports = {
     User.find()
       .select('_id firstName lastName publicKey online streamKey satoshi multiplier messages')
       .then((user) => {
-        console.log(user);
         res.send(user);
       })
       .catch(next);
