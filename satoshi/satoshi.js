@@ -37,7 +37,7 @@ module.exports = class Satoshi {
               }
               User.findOneAndUpdate({ _id: e.userid }, { satoshi: amount, multiplier })
                 .then(() => {
-                  // TODO implement logging
+                  console.log(`updated user ${e.userid}`);
                 });
             });
         }
