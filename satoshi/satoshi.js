@@ -24,7 +24,7 @@ module.exports = class Satoshi {
         e.elapsed += 1;
         if (e.elapsed % 2 === 0) {
           let multiplier;
-          User.findOne({ _id: id })
+          User.findOne({ _id: e.userid })
             .then((user) => {
               // eslint-disable-next-line prefer-destructuring
               multiplier = user.multiplier;
