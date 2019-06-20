@@ -4,8 +4,8 @@ const io = require('socket.io')(http);
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const compression = require('compression');
-const express = require('express')
-var path = require('path');
+const express = require('express');
+let path = require('path');
 
 const UserController = require('./controllers/user.controller');
 const routes = require('./routes/router');
@@ -43,9 +43,9 @@ io.on('connection', (socket) => {
     socket.join(msg.roomId);
 
     UserController.postMessage({
- sender: msg.sender, text: msg.text, firstName: msg.firstName, lastName: msg.lastName 
-},
-      msg.roomId);
+      sender: msg.sender, text: msg.text, firstName: msg.firstName, lastName: msg.lastName,
+    },
+    msg.roomId);
 
     // instantly pass message to everyone connected
     // io.emit('message', msg);
@@ -88,9 +88,9 @@ app.use((req, res, next) => {
 });
 
 // client
-app.use( express.static(path.join(__dirname, 'client')))
+app.use(express.static(path.join(__dirname, 'client')));
 
-app.use('/api', routes);
+app.use(routes);
 
 app.listen(3001, () => {
   console.log('api server running on port : 3001');
@@ -101,10 +101,10 @@ http.listen(3000, () => {
 });
 
 // Postprocessing; catch all non-existing endpoint requests
-app.use('*', function (req, res, next) {
+app.use('*', (req, res, next) => {
 	// logger.error('Non-existing endpoint')
 	res.sendFile('index.html', { root: path.join(__dirname, 'client') });
 
-})
+});
 
 module.exports = app;
