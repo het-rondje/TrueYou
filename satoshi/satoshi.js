@@ -22,7 +22,7 @@ module.exports = class Satoshi {
     setInterval(() => {
       this.users.forEach((e) => {
         e.elapsed += 1;
-        if (e.elapsed % 60 === 0) {
+        if (e.elapsed % 2 === 0) {
           let multiplier;
           User.findOne({ _id: id })
             .then((user) => {
