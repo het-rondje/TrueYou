@@ -4,6 +4,8 @@ const io = require('socket.io')(http);
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const compression = require('compression');
+const express = require('express')
+var path = require('path');
 
 const UserController = require('./controllers/user.controller');
 const routes = require('./routes/router');
@@ -11,6 +13,8 @@ const routes = require('./routes/router');
 app.use(cors());
 
 UserController.setIo(io);
+process.env.NODE_ENV = 'production';
+
 if (process.env.NODE_ENV !== 'test') {
   require('./config/mongo.db');
 }
@@ -38,7 +42,9 @@ io.on('connection', (socket) => {
 
     socket.join(msg.roomId);
 
-    UserController.postMessage({ sender: msg.sender, text: msg.text },
+    UserController.postMessage({
+ sender: msg.sender, text: msg.text, firstName: msg.firstName, lastName: msg.lastName 
+},
       msg.roomId);
 
     // instantly pass message to everyone connected
@@ -81,6 +87,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// client
+app.use( express.static(path.join(__dirname, 'client')))
+
 app.use('/api', routes);
 
 app.listen(3001, () => {
@@ -90,5 +99,12 @@ app.listen(3001, () => {
 http.listen(3000, () => {
   console.log('listening on *:3000');
 });
+
+// Postprocessing; catch all non-existing endpoint requests
+app.use('*', function (req, res, next) {
+	// logger.error('Non-existing endpoint')
+	res.sendFile('index.html', { root: path.join(__dirname, 'client') });
+
+})
 
 module.exports = app;
