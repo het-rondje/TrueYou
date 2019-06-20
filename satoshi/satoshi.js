@@ -35,6 +35,8 @@ module.exports = class Satoshi {
               if (multiplier !== 1) {
                 amount = 2 ** multiplier;
               }
+              console.log(`${satoshi } ___ ${multiplier}`);
+
               User.findOneAndUpdate({ _id: e.userid }, { satoshi: amount, multiplier })
                 .then(() => {
                   console.log(`updated user ${e.userid}`);
