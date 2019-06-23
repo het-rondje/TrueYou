@@ -1,67 +1,109 @@
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
-var cors = require('cors')
-app.use(cors())
-let UserController = require('./controllers/user.controller')
-const routes = require('./routes/router')
-const bodyParser = require('body-parser')
-const compression = require('compression')
-require('./config/mongo.db');
+const app = require('express')();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const compression = require('compression');
+const express = require('express');
+const path = require('path');
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-  io.emit('message', "welcome");
+const UserController = require('./controllers/user.controller');
+const routes = require('./routes/router');
 
-  socket.on('disconnect', function(){
+app.use(cors());
+
+UserController.setIo(io);
+process.env.NODE_ENV = 'production';
+
+if (process.env.NODE_ENV !== 'test') {
+  require('./config/mongo.db');
+}
+
+// console.log(signature.signSignature(JSON.stringify(body), pKey));
+
+io.on('connection', (socket) => {
+  console.log(`a user connected with ip: ${socket.handshake.address}`);
+
+  socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 
-  socket.on('message', function(msg){
+  socket.on('join', (roomId) => {
+    socket.join(roomId);
 
-    console.log('message from: ' + msg.sender + " with content: " + msg.text);
-    UserController.postMessage({sender : msg.sender, text : msg.text}, msg.id);
+    console.log(`user joined room: ${roomId}`);
+  });
 
-    //instantly pass message to everyone connected
-    io.emit('message', msg);
+  socket.on('message', (msg) => {
+    console.log(
+      `message from: ${msg.sender} with content: ${msg.text
+      } to room: ${msg.roomId}`,
+    );
+
+    socket.join(msg.roomId);
+
+    UserController.postMessage({
+      sender: msg.sender, text: msg.text, firstName: msg.firstName, lastName: msg.lastName,
+    },
+    msg.roomId);
+
+    // instantly pass message to everyone connected
+    // io.emit('message', msg);
+    io.sockets.in(msg.roomId).emit('message', msg);
   });
 });
 
 // https://expressjs.com/en/advanced/best-practice-performance.html
-app.use(compression())
+app.use(compression());
 
 // bodyParser parses the body from a request
 // hierin zit de inhoud van een POST request.
-app.use(bodyParser.urlencoded({
-	'extended': 'true'
-})); 
+app.use(
+  bodyParser.urlencoded({
+    extended: 'true',
+  }),
+);
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
-app.use(bodyParser.json({
-	type: 'application/vnd.api+json'
-})); // parse application/vnd.api+json as json
+app.use(
+  bodyParser.json({
+    type: 'application/vnd.api+json',
+  }),
+); // parse application/vnd.api+json as json
 
 // Add CORS headers
-app.use(function (req, res, next) {
-	res.setHeader('Access-Control-Allow-Origin', '*'); // 'http://localhost:4200');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With,content-Type,authorization,Authorization,Connection,Host');
-	res.setHeader('Access-Control-Allow-Credentials', true);
-	next();
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // 'http://localhost:4200');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+  );
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With,content-Type,authorization,'
+      + 'Authorization,Connection,Host',
+  );
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
 });
 
-app.use('/api', routes)
+// client
+app.use(express.static(path.join(__dirname, 'client')));
 
-// Catch-all error handler according to Express documentation - err should always be an ApiError! 
-// See also http://expressjs.com/en/guide/error-handling.html
-app.use((err, req, res, next) => {
-	res.status((err.code || 404)).json(err).end()
-})
+app.use('/api', routes);
 
 app.listen(3001, () => {
-  console.log('api server running on port : 3001')
-})
+  console.log('api server running on port : 3001');
+});
 
-http.listen(3000, function(){
+http.listen(3000, () => {
   console.log('listening on *:3000');
 });
+
+// Postprocessing; catch all non-existing endpoint requests
+app.use('*', (req, res, next) => {
+  // logger.error('Non-existing endpoint')
+  res.sendFile('index.html', { root: path.join(__dirname, 'client') });
+});
+
+module.exports = app;
